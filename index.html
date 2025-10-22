@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rex's "Stop-Being-a-Liability" Blueprint</title>
+    <!-- Chosen Palette: Warm Focus (Beige/Off-white, Dark Gray, Muted Blue Accent) -->
+    <!-- Application Structure Plan: A vertically-scrolling single page with each phase of the roadmap as a distinct, collapsible card. A global progress bar at the top tracks completion of all checklist items. This structure breaks the dense document into manageable sections and turns it into an interactive, persistent checklist, which is the most user-friendly way to consume a task-based report like this. -->
+    <!-- Visualization & Content Choices: Report Info: Checklists & Deadlines -> Goal: Track Progress -> Presentation Method: Interactive HTML checkboxes, input fields for links, and a dynamic progress bar. -> Interaction: User checks items, fills in links, progress bar updates. State saved to localStorage. -> Justification: This directly serves the user's goal of following the roadmap. It's more engaging and useful than a static document. -> Library/Method: Vanilla JS for state management and DOM manipulation. No charting libraries needed. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
+      .task-checkbox:checked {
+        background-color: #3b82f6;
+        border-color: #3b82f6;
+      }
+      .task-checkbox:checked + label {
+        text-decoration: line-through;
+        color: #6b7280;
+      }
+      .phase-card summary::-webkit-details-marker {
+        display: none;
+      }
+      .phase-card summary {
+        list-style: none;
+      }
+    </style>
+  </head>
+  <body class="bg-neutral-50 text-neutral-800">
+    <div class="max-w-4xl mx-auto p-4 sm:p-6 md:p-8">
+      <header class="text-center mb-8">
+        <h1 class="text-3xl sm:text-4xl font-bold text-neutral-900">
+          Rex's "Stop-Being-a-Liability" Blueprint
+        </h1>
+        <p class="text-neutral-600 mt-2">
+          Do the work. Check the box. Get paid. No excuses.
+        </p>
+      </header>
+
+      <div class="bg-white rounded-lg shadow-md p-6 mb-8 sticky top-4 z-10">
+        <h2 class="font-bold text-lg mb-3 text-center">Overall Progress</h2>
+        <div class="w-full bg-neutral-200 rounded-full h-4">
+          <div
+            id="progressBar"
+            class="bg-blue-600 h-4 rounded-full transition-all duration-500 ease-out"
+            style="width: 0%"
+          ></div>
+        </div>
+        <p
+          id="progressText"
+          class="text-center mt-2 text-sm font-medium text-neutral-700"
+        >
+          0% Complete
+        </p>
+      </div>
+
+      <main id="roadmapContainer" class="space-y-6">
+        <!-- Phases will be dynamically inserted here -->
+      </main>
+    </div>
+
+    <script>
+      const roadmapData = [
+        {
+          id: "phase0",
+          title: "PHASE 0: PAY YOUR DEBTS (React Gauntlet)",
+          deadline: "DEADLINE: 3 DAYS FROM NOW",
+          open: true,
+          modules: [
+            {
+              title: "Deliverable: GitHub Repo `react-gauntlet-filter`",
+              hasLink: true,
+              tasks: [
+                "Initialized with `create-next-app` (TypeScript).",
+                "State managed with `useState` (for `loading`, `error`, `users`, `filter`).",
+                "Data fetched ONCE inside a `useEffect` with a correct empty `[]` dependency array.",
+                'UI correctly renders all 3 states: "Loading...", "Error fetching data.", and the user list.',
+                'Filter logic works and correctly renders "No results found."',
+                "Debounce logic is implemented (e.g., custom `useDebounce` hook) and applied to the input.",
+              ],
+            },
+          ],
+        },
+        {
+          id: "phase1",
+          title: "PHASE 1: FIX YOUR FOUNDATION (JS & Git)",
+          deadline: "DEADLINE: 3 WEEKS FROM PHASE 0 COMPLETION",
+          open: false,
+          modules: [
+            {
+              title: "Module 1.1: JavaScript Deep Dive",
+              hasLink: true,
+              linkRepoName: "`vanilla-js-weather-app`",
+              tasks: [
+                "Fetches from a free weather API (e.g., OpenWeatherMap).",
+                "Uses Closures (e.g., a module pattern for your API keys or state).",
+                "Uses `async/await` and proper `try...catch` for network errors.",
+                "Manages state in a single vanilla JS object (like our gauntlet).",
+                "Uses `Map` or `Set` to handle or store some piece of data (e.g., caching previous searches).",
+              ],
+            },
+            {
+              title: "Module 1.2: Git Collaboration",
+              hasLink: true,
+              linkRepoName: "Link to a Merged Pull Request (PR)",
+              tasks: [
+                "Found a public, open-source project.",
+                "Forked the repo and cloned it.",
+                "Created a new branch for a specific fix (`fix/typo-in-readme`).",
+                "Made the change and committed with a Conventional Commit message.",
+                "Pushed the branch and opened a clean PR.",
+                "The PR was successfully merged.",
+              ],
+            },
+          ],
+        },
+        {
+          id: "phase2",
+          title: "PHASE 2: THE HIREABLE FRONT-END (Full-Stack App)",
+          deadline: "DEADLINE: 6 WEEKS FROM PHASE 1 COMPLETION",
+          open: false,
+          modules: [
+            {
+              title: 'Project: "Reddit-Lite" or "Trello-Lite"',
+              hasLink: true,
+              linkRepoName: "GitHub Repo `fullstack-nextjs-app`",
+              hasDeploymentLink: true,
+              tasks: [
+                "Stack: Next.js (App Router), TypeScript, PostgreSQL, Prisma, NextAuth.js, Zod, Tailwind, Zustand (or Jotai).",
+                "Database Schema: `schema.prisma` is well-designed with clear relations.",
+                "Authentication: Users can register, log in, and log out via NextAuth.",
+                "Protected Routes: Pages for creating posts are protected.",
+                "Data Validation: Zod is used for all form inputs on both client and server.",
+                "CRUD (Communities): Users can create, view, and list all communities/boards.",
+                "CRUD (Posts): Authenticated users can create new posts within a community.",
+                "CRUD (Comments): Authenticated users can comment on posts.",
+                "State Management: Zustand (or Jotai) is used for global state.",
+                "UI: Clean, responsive, and built with Tailwind.",
+              ],
+            },
+          ],
+        },
+        {
+          id: "phase3",
+          title: 'PHASE 3: THE "FULL-STACK" SPLIT (Standalone API)',
+          deadline: "DEADLINE: 4 WEEKS FROM PHASE 2 COMPLETION",
+          open: false,
+          modules: [
+            {
+              title: 'Project: "Reddit-Lite" Standalone API',
+              hasLink: true,
+              linkRepoName: "GitHub Repo (API): `standalone-api-express`",
+              tasks: [
+                "Stack: Node.js, Express, TypeScript, Prisma, PostgreSQL.",
+                "API: Full RESTful routes built for all features.",
+                "Authentication: Custom JWT-based authentication middleware.",
+                "CORS: `cors` middleware is correctly configured.",
+                "Error Handling: A global error-handling middleware is implemented.",
+                "Validation: Zod is used to validate all incoming request bodies.",
+                "Front-End Refactor: Next.js app now calls the new external Express API.",
+              ],
+            },
+          ],
+        },
+        {
+          id: "phase4",
+          title: "PHASE 4: THE DEVOPS PROOF (Containerization)",
+          deadline: "DEADLINE: 2 WEEKS FROM PHASE 3 COMPLETION",
+          open: false,
+          modules: [
+            {
+              title: "Project: Containerize Your Full-Stack App",
+              hasLink: true,
+              linkRepoName: "GitHub Repo `fullstack-docker-compose`",
+              tasks: [
+                "`Dockerfile` (Front-End): A multi-stage `Dockerfile` exists for the Next.js app.",
+                "`Dockerfile` (Back-End): A `Dockerfile` exists for the Express API.",
+                "`docker-compose.yml`: A single `docker-compose.yml` file is created.",
+                "One-Command Launch: `docker-compose up` successfully builds and launches all services.",
+                "App is Functional: The entire application runs locally purely through Docker.",
+              ],
+            },
+          ],
+        },
+      ];
+
+      const roadmapContainer = document.getElementById("roadmapContainer");
+      let state = {};
+
+      function saveState() {
+        localStorage.setItem("roadmapProgress", JSON.stringify(state));
+      }
+
+      function loadState() {
+        const savedState = localStorage.getItem("roadmapProgress");
+        if (savedState) {
+          state = JSON.parse(savedState);
+        } else {
+          // Initialize default state
+          roadmapData.forEach((phase) => {
+            state[phase.id] = {};
+            phase.modules.forEach((module, moduleIndex) => {
+              const moduleId = `module${moduleIndex}`;
+              state[phase.id][moduleId] = {
+                tasks: Array(module.tasks.length).fill(false),
+                link: "",
+                deploymentLink: "",
+              };
+            });
+          });
+        }
+      }
+
+      function updateProgress() {
+        const allCheckboxes = document.querySelectorAll(".task-checkbox");
+        const checkedCheckboxes = document.querySelectorAll(
+          ".task-checkbox:checked"
+        );
+        const totalTasks = allCheckboxes.length;
+        const completedTasks = checkedCheckboxes.length;
+
+        const percentage =
+          totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+        const progressBar = document.getElementById("progressBar");
+        const progressText = document.getElementById("progressText");
+
+        progressBar.style.width = `${percentage}%`;
+        progressText.textContent = `${percentage}% Complete (${completedTasks} / ${totalTasks} tasks)`;
+      }
+
+      function renderRoadmap() {
+        roadmapContainer.innerHTML = "";
+        roadmapData.forEach((phase) => {
+          const phaseElement = document.createElement("details");
+          phaseElement.className =
+            "phase-card bg-white rounded-lg shadow-md overflow-hidden";
+          phaseElement.open = phase.open;
+
+          let phaseModulesHTML = "";
+          phase.modules.forEach((module, moduleIndex) => {
+            const moduleId = `module${moduleIndex}`;
+            const moduleState = state[phase.id][moduleId];
+
+            let tasksHTML = module.tasks
+              .map(
+                (task, taskIndex) => `
+                        <li class="flex items-start space-x-3">
+                            <input id="${
+                              phase.id
+                            }-${moduleId}-task${taskIndex}" type="checkbox"
+                                   class="task-checkbox form-checkbox h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1 flex-shrink-0"
+                                   data-phase="${
+                                     phase.id
+                                   }" data-module="${moduleId}" data-task="${taskIndex}"
+                                   ${
+                                     moduleState.tasks[taskIndex]
+                                       ? "checked"
+                                       : ""
+                                   }>
+                            <label for="${
+                              phase.id
+                            }-${moduleId}-task${taskIndex}" class="text-neutral-700">${task}</label>
+                        </li>
+                    `
+              )
+              .join("");
+
+            let linkInputHTML = "";
+            if (module.hasLink) {
+              linkInputHTML = `
+                            <div class="mt-4">
+                                <label for="${
+                                  phase.id
+                                }-${moduleId}-link" class="block text-sm font-medium text-gray-700">${
+                module.linkRepoName || "Link:"
+              }</label>
+                                <div class="mt-1">
+                                    <input type="text" id="${
+                                      phase.id
+                                    }-${moduleId}-link"
+                                           class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+                                           placeholder="Paste your link here"
+                                           data-phase="${
+                                             phase.id
+                                           }" data-module="${moduleId}"
+                                           value="${moduleState.link || ""}">
+                                </div>
+                            </div>
+                        `;
+            }
+
+            let deploymentLinkInputHTML = "";
+            if (module.hasDeploymentLink) {
+              deploymentLinkInputHTML = `
+                            <div class="mt-4">
+                                <label for="${
+                                  phase.id
+                                }-${moduleId}-deploymentLink" class="block text-sm font-medium text-gray-700">Live Deployment Link:</label>
+                                <div class="mt-1">
+                                    <input type="text" id="${
+                                      phase.id
+                                    }-${moduleId}-deploymentLink"
+                                           class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+                                           placeholder="Paste your deployment link here"
+                                           data-phase="${
+                                             phase.id
+                                           }" data-module="${moduleId}"
+                                           value="${
+                                             moduleState.deploymentLink || ""
+                                           }">
+                                </div>
+                            </div>
+                        `;
+            }
+
+            phaseModulesHTML += `
+                        <div class="p-6 border-t border-gray-200">
+                            <h4 class="font-semibold text-md text-neutral-800">${module.title}</h4>
+                            <ul class="mt-4 space-y-3">${tasksHTML}</ul>
+                            ${linkInputHTML}
+                            ${deploymentLinkInputHTML}
+                        </div>
+                    `;
+          });
+
+          phaseElement.innerHTML = `
+                    <summary class="p-6 cursor-pointer flex justify-between items-center bg-white">
+                        <div>
+                            <h3 class="text-xl font-bold text-neutral-900">${phase.title}</h3>
+                            <p class="text-sm font-medium text-blue-600 mt-1">${phase.deadline}</p>
+                        </div>
+                        <svg class="w-6 h-6 text-gray-500 transition-transform transform details-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </summary>
+                    ${phaseModulesHTML}
+                `;
+          roadmapContainer.appendChild(phaseElement);
+        });
+        addEventListeners();
+        updateProgress();
+      }
+
+      function handleInteraction(e) {
+        const target = e.target;
+        const phaseId = target.dataset.phase;
+        const moduleId = target.dataset.module;
+
+        if (!phaseId || !moduleId) return;
+
+        if (target.matches(".task-checkbox")) {
+          const taskId = parseInt(target.dataset.task, 10);
+          state[phaseId][moduleId].tasks[taskId] = target.checked;
+        } else if (target.matches('input[type="text"]')) {
+          if (target.id.includes("deploymentLink")) {
+            state[phaseId][moduleId].deploymentLink = target.value;
+          } else {
+            state[phaseId][moduleId].link = target.value;
+          }
+        }
+
+        saveState();
+        updateProgress();
+      }
+
+      function addEventListeners() {
+        roadmapContainer.addEventListener("change", handleInteraction);
+        roadmapContainer.addEventListener("input", handleInteraction);
+      }
+
+      // Initial Load
+      loadState();
+      renderRoadmap();
+    </script>
+  </body>
+</html>
